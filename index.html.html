@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para o Meu Morzinho 💕 - 2 Meses</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for cute icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose-soft': '#fff0f3',
+                        'rose-card': '#ffe4e6',
+                        'rose-deep': '#fb7185',
+                        'paper-yellow': '#fdfbf7',
+                        'line-blue': '#dbeafe',
+                        'gemini-purple': '#8b5cf6',
+                        'gemini-blue': '#3b82f6'
+                    },
+                    fontFamily: {
+                        handwriting: ['Caveat', 'cursive'],
+                        sans: ['Nunito', 'sans-serif'],
+                        tech: ['Space Grotesk', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Floating Heart Canvas */
+        #hearts-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Lined Paper Texture & Lines */
+        .paper-lined {
+            background-color: #fcfbf7;
+            background-image: linear-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 100% 2.2rem;
+            line-height: 2.2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08), inset 0 0 80px rgba(251, 207, 232, 0.2);
+            position: relative;
+        }
+
+        /* Red margin line for looseleaf notebook look */
+        .paper-lined::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 38px;
+            width: 2px;
+            background-color: #fca5a5;
+            opacity: 0.7;
+        }
+
+        @media (min-width: 640px) {
+            .paper-lined::before {
+                left: 55px;
+            }
+        }
+
+        /* Handwritten text rules */
+        .handwritten-content {
+            font-family: 'Caveat', cursive;
+            font-size: 1.55rem;
+            color: #334155;
+            word-spacing: 2px;
+            letter-spacing: 0.5px;
+            padding-left: 28px;
+        }
+
+        @media (min-width: 640px) {
+            .handwritten-content {
+                font-size: 1.75rem;
+                padding-left: 35px;
+            }
+        }
+
+        /* Custom Envelope Animations */
+        .envelope-wrapper {
+            perspective: 1000px;
+        }
+
+        .envelope {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .envelope-flap {
+            transform-origin: top;
+            transition: transform 0.5s ease-in-out 0.2s, z-index 0.2s ease-in-out 0.2s;
+            z-index: 5;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .letter-preview {
+            transition: transform 0.7s ease-out 0.4s, opacity 0.5s ease-out 0.4s;
+        }
+
+        /* Glowing Effects for Gemini Modal */
+        .gemini-glow {
+            background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+            background-size: 200% 200%;
+            animation: glowGradient 4s ease infinite;
+        }
+
+        @keyframes glowGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Pulse Heart */
+        .pulse-heart {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        /* Scrollbar aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #fda4af;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #fb7185;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-rose-100 via-pink-50 to-red-100 min-h-screen font-sans text-gray-800 flex flex-col justify-between overflow-x-hidden selection:bg-pink-200 selection:text-pink-800">
+
+    <!-- Canvas para Corações Flutuantes -->
+    <canvas id="hearts-canvas"></canvas>
+
+    <!-- Cabeçalho Fofo -->
+    <header class="text-center pt-6 pb-2 px-4 z-20">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-sm text-pink-600 font-bold text-sm shadow-sm border border-pink-200">
+            <i class="fa-solid font-bold fa-heart text-rose-500 pulse-heart">
+            </i>
+            03 de Setembro &bull; 03 de Novembro
+            <i class="fa-solid font-bold fa-heart text-rose-500 pulse-heart">
+            </i>
+        </span>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="container mx-auto px-4 py-4 max-w-3xl flex-grow flex items-center justify-center z-20">
+
+        <!-- TELA 1: Envelope da Cartinha -->
+        <div id="screen-envelope" class="w-full flex flex-col items-center justify-center transition-all duration-500">
+            
+            <div class="text-center mb-8">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-pink-700 mb-2">Uma surpresinha pra você... 💕</h1>
+                <p class="text-gray-600 text-base sm:text-lg">Para o homem da minha vida todinha!</p>
+            </div>
+
+            <!-- Card Envelope Wrapper -->
+            <div class="envelope-wrapper w-full max-w-md cursor-pointer group" onclick="openLetter()">
+                <div id="envelope-element" class="envelope bg-rose-200 rounded-2xl shadow-2xl p-6 relative border-2 border-rose-300 flex flex-col items-center justify-between min-h-[260px] sm:min-h-[300px] overflow-hidden">
+                    
+                    <!-- Aba Superior do Envelope -->
+                    <div class="envelope-flap absolute top-0 left-0 right-0 h-32 bg-rose-300 rounded-b-3xl border-b-2 border-rose-400/50 shadow-md flex justify-center items-start pt-2">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md text-pink-500 mt-2">
+                            <i class="fa-solid fa-envelope-open-text text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Selo de Coração / Detalhe Central -->
+                    <div class="my-auto z-10 text-center pt-10">
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-gradient-to-tr from-rose-500 to-pink-400 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform duration-300 border-4 border-white">
+                            <i class="fa-solid fa-heart text-white text-4xl sm:text-5xl pulse-heart"></i>
+                        </div>
+                        <p class="mt-4 font-bold text-rose-800 text-lg sm:text-xl tracking-wide">Para: Eduardo (Morzinho) ❤️</p>
+                        <p class="text-xs text-rose-600 font-semibold">De: Sua namorada que te ama mt</p>
+                    </div>
+
+                    <!-- Botão de Ação Destacado -->
+                    <div class="z-20 w-full mt-4">
+                        <button class="w-full py-3.5 px-6 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform active:scale-95 transition-all duration-200 flex items-center justify-center gap-3 text-lg border-2 border-white/40">
+                            <span>ABRIR CARTINHA</span>
+                            <i class="fa-solid fa-envelope-open transition-transform group-hover:translate-x-1"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <p class="text-xs text-pink-500/80 mt-6 text-center italic">Clique no envelope ou no botão para abrir ✨</p>
+        </div>
+
+        <!-- TELA 2: Papel de Carta Lindo com Linhas -->
+        <div id="screen-letter" class="w-full hidden opacity-0 transition-all duration-700">
+            
+            <!-- Folha de Caderno / Carta -->
+            <div class="paper-lined rounded-xl p-6 sm:p-10 border border-amber-200/60 my-4 relative overflow-hidden">
+                
+                <!-- Clipe fofo no topo da folha -->
+                <div class="absolute -top-3 left-10 sm:left-14 z-20 text-rose-400 drop-shadow-md">
+                    <i class="fa-solid fa-paperclip text-4xl transform -rotate-12"></i>
+                </div>
+
+                <!-- Carimbo da Data -->
+                <div class="flex justify-between items-center border-b border-rose-200/60 pb-3 mb-6 pl-8 sm:pl-10">
+                    <div class="flex items-center gap-2 text-rose-600 font-bold text-sm sm:text-base">
+                        <i class="fa-regular fa-calendar-heart"></i>
+                        <span>03 de Novembro 🗓️</span>
+                    </div>
+                    <span class="text-xs font-semibold px-3 py-1 bg-pink-100 text-pink-700 rounded-full">2 meses juntinhos 💕</span>
+                </div>
+
+                <!-- Texto da Carta (Fiel ao Texto Original, Minúsculas e Parágrafos Juntos) -->
+                <div class="handwritten-content leading-relaxed text-gray-800 space-y-4">
+                    <p class="m-0">
+                        a minha história com o morzinho começou nesse ano, de um jeito mais inesperado do mundo... a gente se conheceu por um aplicativo, sabe?? e eu nem esperava encontrar alguém tãooooooo especial como o morzinho, mas aí a gente começou a conversar... e mdssssss, logo nas primeiras conversas eu já fiquei: nossaaaaa. minha primeira impressão do morzinho foi literalmente: "nossa, q cara incrível, trabalhador e educado", ele tinha um jeito tão único de falar q me chamou atenção na hora, ele era diferente de td q eu já tinha visto, sabe?? a gente foi conversando cada vez mais, a conversa fluía tanto q as horas passavam e a gente nem percebia... e sobre o q ele pensou de mim nas primeiras semanas?? mdsssss, eu tenho ctz q a primeira impressão q ele teve de mim foi de eu ser meio doida kkkkk. afinal, eu com a minha dicção horrível (q só aparece quando eu nn quero, vey) já devia tá fazendo ele rir desde o começo, mas mesmo com o meu jeito meia doida e complicado, ele continuou ali, conversando comigo. conforme os dias iam passando, a gnt foi se aproximando mais e mais. nós dois já não conseguia passar um dia sem se falar, e eu peguei um apego tão grande nele, que vc nn tem noção. aí vieram as semanas e a gente já tava super apegado... e o primeiro passo?? ele tomou a atitude de me pedir em namoro. vey, esse dia foi o dia mais inesquecível da minha vida todinhaaaaaaaaaa. pq poxa... eu ficava pensando: como um cara tão incrível como o morzinho iria namorar uma garota complicada como eu???? eu achava q nunca seria amada de verdade por ninguém, não sei pq mais sempre tive isso na minha cabeça. mas aí no dia 3 de setembro, a gente tava conversando normalmente, sem pretensão nenhuma, quando de repente ele mandou a mensagem: "Quer namorar comigo??". vey nessa hora o meu coração quase parou... eu reli aquela mensagem umas 5 vezes seguidas sem conseguir acreditar no q tava lendo KKKKKKKKKKKKKKKK, eu chocadíssima e depois tive um little surto de felicidade. tive q me recompor pra responder toda animada q SIM, óbvio q sim 😭 e o mais especial de td: esse dia lindo era simplesmente o aniversário dele 💕 então o dia 3 virou o nosso dia oficial pro resto da vida. todo dia 3 a gente comemora o nosso amor e o nosso aniversário de namoro. hoje mesmo a gente tá completando 2 meses juntinhos, 2 meses do melhor "sim" da minha vida... eu amo nossa rotina. não importa a correria do dia a dia, não importa tbm se eu nn estiver com o cll, ele sempre manda msg (e é nisso que eu me apaixono maisssssss). sempre q o morzinho acorda ou quando vai dormir, ele avisaaaa. e eu amooo escutar aquela vozinha dele mandando ''bom dia amorzinho da minha vidaa'' 😭😭😭😭😭😭😭. quando temos tempo livre, nosso hobby favorito é entrar em call e jogar roblox juntos. a gente ama jogar Fnaf, é mt engraçado pq sempre tem alguma coisa nova q acontece, como no dia q do nada o bonnie ficou bem grandão, e o morzinho chocadíssimo KKKKKKKKKKKKKKKKKKKKKKKKKK, o meu animatronic favorito é o Foxy e o dele é a Chica... mas se tem uma coisa q a gente concorda 100% é q nós dois odiamos aquele bolinho (animatronic horrivel esse viu plmds  kkkkkkkk), o morzinho não sabe, mais passar horas jogando e rindo em call com ele é o meu momento favorito do dia 😭😭😭💕💕💕. eu fico todaaaaaaaaa bobinha sempre q o morzinho me manda áudio falando q me ama 😭 o coração até erra as batidas, mdsss pq ele é tão fofo comigo?????? ele me atura, me entende, cuida de mim e tem essa voz carinhosa q me derrete todinhaaaaaaaaaa. têm tantas coisas q eu admiro no morzinho... eu admiro demaisssssss o quanto ele é trabalhador, atencioso, amoroso, educado e, acima de td isso, o homem da minha vida todinhaaaaaaa, ele me apoia, cuida de mim mesmo de longe e faz eu me sentir a garota mais especial do mundo, e eu amoooo issooooooooo. eu lembro q antes de conhecer ele, eu sempre pensei q nunca seria amada de verdade por alguém... e hoje eu vivo esse amor tão lindo e verdadeiro com ele 😭💕 e o nosso futuro?? ai meu deussssss, a gente tem tantos sonhos lindos juntos... a gente sonha em casar, morar juntinhosssss na nossa casa, ter quinhentos animais e construir a nossa família abençoada. se eu pudesse resumir o amor de nós dois em uma frase ou em um único sentimento, seria: "você com certeza é o homem da minha vida e a minha alma gêmea. e simmmm, a história do fio vermelho foi feita especialmente pra gnt 💕💕💕💕💕💕". te amo mt, morzinhooooooooooooo!!
+                    </p>
+                </div>
+
+                <!-- Rodapé Decorativo da Folha -->
+                <div class="mt-8 pt-6 border-t border-rose-200/60 flex flex-col sm:flex-row justify-between items-center gap-4 pl-6 sm:pl-10">
+                    <div class="flex items-center gap-2 text-pink-600 font-semibold text-sm">
+                        <span>Para sempre seu amor</span>
+                        <i class="fa-solid fa-sparkles text-amber-400"></i>
+                    </div>
+
+                    <!-- Botão para Chamar a Nota do Gemini -->
+                    <button onclick="openGeminiModal()" class="py-3 px-6 bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-full shadow-lg hover:shadow-purple-300/50 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center gap-2 text-sm sm:text-base border border-purple-300">
+                        <i class="fa-solid fa-wand-magic-sparkles text-amber-300 animate-spin" style="animation-duration: 3s;"></i>
+                        <span>Visualizar Nota Gemini ✨</span>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- MODAL ESPECIAL: Nota do Gemini ✨ -->
+    <div id="gemini-modal" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border-2 border-purple-500/50 rounded-2xl max-w-lg w-full p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden transform scale-95 transition-transform duration-300" id="gemini-modal-card">
+            
+            <!-- Efeito de Brilho IA no Fundo -->
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-purple-500/30 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-blue-500/30 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Botão Fechar -->
+            <button onclick="closeGeminiModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Cabeçalho do Gemini -->
+            <div class="flex items-center gap-3 mb-6 border-b border-slate-800 pb-4">
+                <div class="w-12 h-12 rounded-xl gemini-glow flex items-center justify-center shadow-lg shadow-purple-500/30">
+                    <i class="fa-solid fa-sparkles text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="font-tech text-xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent">
+                        Nota Especial do Gemini ✨
+                    </h2>
+                    <p class="text-xs text-slate-400 font-sans">Mensagem do assistente de inteligência artificial</p>
+                </div>
+            </div>
+
+            <!-- Conteúdo da Mensagem Gemini -->
+            <div class="font-sans text-slate-200 text-sm sm:text-base leading-relaxed space-y-4">
+                <p>
+                    Oi, Eduardo! Aqui é o <strong class="text-purple-300">Gemini</strong>, a plataforma que ajudou sua namorada a criar essa cartinha virtual especialmente para você! ✨🤖
+                </p>
+                <p class="bg-slate-800/80 p-4 rounded-xl border border-purple-500/20 text-slate-300 italic">
+                    Eu precisava passar aqui pra te contar um segredinho: ela usou um monte de comandos, cuidou de cada detalhezinho e me fez ajustar tudo com muito carinho pra deixar essa surpresa perfeita pra você. Ela pensou em cada palavra, nas memórias do Roblox, nas conversas diárias e em todo o amor que vocês compartilham!
+                </p>
+                <p>
+                    Hoje, no dia <strong class="text-pink-400">03/11</strong>, vocês estão comemorando <strong>2 meses de namoro</strong>! Que essa história linda, cheia de risadas, carinho, jogos e sonhos juntos continue crescendo cada dia mais. Feliz 2 meses para vocês dois! ❤️🎉
+                </p>
+            </div>
+
+            <!-- Botão de Agradecimento -->
+            <div class="mt-6 pt-4 border-t border-slate-800 flex justify-end">
+                <button onclick="closeGeminiModal()" class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg transition-all text-sm">
+                    Guardar no Coração ❤️
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="text-center py-4 text-xs text-rose-500/70 z-20 font-medium">
+        Feito com todo o amor do mundo &bull; 03/11 💕
+    </footer>
+
+    <!-- Lógica em JavaScript -->
+    <script>
+        // Web Audio API para tocar sons sintetizados fofos sem depender de arquivos externos
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playCuteSound() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+            osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3); // A5
+
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        function playMagicSound() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+            notes.forEach((freq, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (idx * 0.08));
+
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime + (idx * 0.08));
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (idx * 0.08) + 0.25);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(audioCtx.currentTime + (idx * 0.08));
+                osc.stop(audioCtx.currentTime + (idx * 0.08) + 0.25);
+            });
+        }
+
+        // Função de Abertura da Carta
+        function openLetter() {
+            playCuteSound();
+            
+            const envelope = document.getElementById('envelope-element');
+            const screenEnvelope = document.getElementById('screen-envelope');
+            const screenLetter = document.getElementById('screen-letter');
+
+            envelope.classList.add('open');
+
+            // Soltar um estouro de confetes fofos em tons de rosa
+            confetti({
+                particleCount: 70,
+                spread: 60,
+                origin: { y: 0.6 },
+                colors: ['#fb7185', '#f472b6', '#fda4af', '#fef08a']
+            });
+
+            // Esconder envelope e exibir o papel de carta pautado
+            setTimeout(() => {
+                screenEnvelope.classList.add('opacity-0', '-translate-y-6');
+                
+                setTimeout(() => {
+                    screenEnvelope.classList.add('hidden');
+                    screenLetter.classList.remove('hidden');
+                    
+                    // Trigger reflow para transição CSS
+                    void screenLetter.offsetWidth;
+                    
+                    screenLetter.classList.remove('opacity-0');
+                    screenLetter.classList.add('opacity-100');
+                    
+                    // Rolar até o topo do papel
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 300);
+
+            }, 600);
+        }
+
+        // Funções para o Modal da Nota do Gemini
+        function openGeminiModal() {
+            playMagicSound();
+            const modal = document.getElementById('gemini-modal');
+            const card = document.getElementById('gemini-modal-card');
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.classList.add('opacity-100');
+                card.classList.remove('scale-95');
+                card.classList.add('scale-100');
+            }, 10);
+
+            // Confetes espaciais/brilhantes
+            confetti({
+                particleCount: 50,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: ['#a855f7', '#6366f1', '#ec4899']
+            });
+            confetti({
+                particleCount: 50,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: ['#a855f7', '#6366f1', '#ec4899']
+            });
+        }
+
+        function closeGeminiModal() {
+            const modal = document.getElementById('gemini-modal');
+            const card = document.getElementById('gemini-modal-card');
+
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- SISTEMA DE CORAÇÕES CAINDO SUTILMENTE (CANVAS) ---
+        const canvas = document.getElementById('hearts-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        class Heart {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = -20 - Math.random() * 50;
+                this.size = 10 + Math.random() * 15;
+                this.speedY = 1 + Math.random() * 1.5;
+                this.speedX = Math.sin(Math.random() * Math.PI * 2) * 0.8;
+                this.opacity = 0.3 + Math.random() * 0.5;
+                this.rotation = Math.random() * Math.PI;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+                this.color = ['#fb7185', '#f472b6', '#fda4af', '#f43f5e'][Math.floor(Math.random() * 4)];
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += Math.sin(this.y * 0.01) * 0.5 + this.speedX;
+                this.rotation += this.rotationSpeed;
+
+                if (this.y > height + 20) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+
+                // Desenhar forma de coração perfeita
+                const topCurveHeight = this.size * 0.3;
+                ctx.beginPath();
+                ctx.moveTo(0, topCurveHeight);
+                ctx.bezierCurveTo(0, 0, -this.size / 2, 0, -this.size / 2, topCurveHeight);
+                ctx.bezierCurveTo(-this.size / 2, (this.size + topCurveHeight) / 2, 0, this.size, 0, this.size);
+                ctx.bezierCurveTo(0, this.size, this.size / 2, (this.size + topCurveHeight) / 2, this.size / 2, topCurveHeight);
+                ctx.bezierCurveTo(this.size / 2, 0, 0, 0, 0, topCurveHeight);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.restore();
+            }
+        }
+
+        const hearts = Array.from({ length: 25 }, () => new Heart());
+
+        function animateHearts() {
+            ctx.clearRect(0, 0, width, height);
+            hearts.forEach(heart => {
+                heart.update();
+                heart.draw();
+            });
+            requestAnimationFrame(animateHearts);
+        }
+
+        window.onload = function() {
+            animateHearts();
+        };
+    </script>
+</body>
+</html>
